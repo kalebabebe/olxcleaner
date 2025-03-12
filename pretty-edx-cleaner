@@ -1,0 +1,206 @@
+#!/usr/bin/env python3.9
+
+import subprocess
+import re
+import os
+import argparse
+from collections import defaultdict
+
+# Define issue severity categories
+MAJOR_ISSUES = [
+    'GradingPolicyIssue',  # Affects grading
+    'InvalidSetting',      # Missing required course settings
+    'InvalidHTML',         # HTML errors that might affect content display
+    'PolicyNotFound'       # Missing policy file - critical issue
+]
+
+MINOR_ISSUES = [
+    'MissingFile',         # Missing static files 
+    'DateOrdering',        # Date ordering issues
+    'MissingDisplayName',  # Missing display names (visual issue)
+    'UnexpectedTag'        # 
+]
+
+# All other issues are considered FYI
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Improved edX course validator output formatter')
+parser.add_argument('--major-only', action='store_true', help='Show only major issues')
+parser.add_argument('--minor-only', action='store_true', help='Show only minor issues')
+parser.add_argument('--fyi-only', action='store_true', help='Show only FYI issues')
+parser.add_argument('--no-color', action='store_true', help='Disable colored output')
+args = parser.parse_args()
+
+# Determine if we should use colors
+use_colors = not args.no_color
+
+# Define colors if supported
+if use_colors:
+    RED = '\033[91m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+else:
+    RED = YELLOW = BLUE = BOLD = RESET = ''
+
+# Get current directory to use as base path
+BASE_PATH = os.getcwd()
+
+# Initialize the issues dictionary
+issues_by_file = defaultdict(list)
+
+# Find policy paths
+policy_paths = {}
+
+# Run the edx-cleaner command and capture output
+result = subprocess.run(['edx-cleaner'], capture_output=True, text=True)
+output = result.stdout
+
+# Parse the output
+pattern = r'(WARNING|ERROR) (\w+) \((.*?)\): (.*)'
+
+# Extract url_name and display_name from message for better navigation
+url_name_pattern = r"url_name='([^']+)'"
+display_name_pattern = r"display_name='([^']+)'"
+
+for line in output.split('\n'):
+    match = re.match(pattern, line)
+    if match:
+        severity, issue_type, file_path, message = match.groups()
+        
+        # Create full path for the file
+        full_path = os.path.join(BASE_PATH, file_path)
+        
+        # Handle policy files separately
+        if file_path == 'policy.json' or file_path == 'grading_policy.json':
+            # Try to find the policy file in the policies directory
+            found = False
+            for root, dirs, files in os.walk(os.path.join(BASE_PATH, 'policies')):
+                if file_path in files:
+                    found = True
+                    full_path = os.path.join(root, file_path)
+                    break
+            
+            # If we didn't find it, keep the original path
+            if not found:
+                full_path = os.path.join(BASE_PATH, file_path)
+        
+        # Extract additional navigation info for html files
+        extra_info = ""
+        if "html" in file_path and issue_type == "MissingFile":
+            url_name_match = re.search(url_name_pattern, message)
+            if url_name_match:
+                url_name = url_name_match.group(1)
+                file_type = file_path.split('/')[-2]  # Gets 'html' from the path
+                html_file = f"{file_type}/{url_name}.html"
+                
+                # Check if the HTML file exists
+                potential_html_path = os.path.join(BASE_PATH, html_file)
+                if os.path.exists(potential_html_path):
+                    extra_info = f" [HTML source: {potential_html_path}]"
+        
+        # Store the issue with any extra info
+        issues_by_file[full_path].append((severity, issue_type, message, extra_info))
+
+# Function to determine issue level
+def get_issue_level(issue_type, message):
+    if issue_type in MAJOR_ISSUES:
+        return 'MAJOR'
+    elif issue_type in MINOR_ISSUES:
+        return 'MINOR'
+    else:
+        return 'FYI'
+
+# Print a categorized report
+print(f"\n{BOLD}===== EDX CLEANER REPORT ====={RESET}\n")
+
+# Count issues by category
+major_count = 0
+minor_count = 0
+fyi_count = 0
+
+# Helper function to collect issues by type within severity level
+def collect_issues_by_type(issues, level):
+    result = defaultdict(list)
+    for file_path, file_issues in issues.items():
+        for severity, issue_type, message, extra_info in file_issues:
+            if get_issue_level(issue_type, message) == level:
+                result[issue_type].append((file_path, severity, message, extra_info))
+    return result
+
+# MAJOR ISSUES SECTION
+if not args.minor_only and not args.fyi_only:
+    print(f"\n{RED}🔴 MAJOR ISSUES{RESET}\n" + "="*50)
+    
+    # Group major issues by type
+    major_issues_by_type = collect_issues_by_type(issues_by_file, 'MAJOR')
+    
+    if not major_issues_by_type:
+        print("  No major issues found.")
+    else:
+        # Print each type of major issue
+        for issue_type, issues in sorted(major_issues_by_type.items()):
+            print(f"\n{RED}▶ {issue_type}{RESET} ({len(issues)} issues)")
+            print("-" * 40)
+            
+            # Sort issues by file name
+            for file_path, severity, message, extra_info in sorted(issues, key=lambda x: os.path.basename(x[0])):
+                major_count += 1
+                print(f"  📄 {file_path}:")
+                print(f"    ❌ {message}{extra_info}")
+                print()
+
+# MINOR ISSUES SECTION
+if not args.major_only and not args.fyi_only:
+    print(f"\n{YELLOW}🟡 MINOR ISSUES{RESET}\n" + "="*50)
+    
+    # Group minor issues by type
+    minor_issues_by_type = collect_issues_by_type(issues_by_file, 'MINOR')
+    
+    if not minor_issues_by_type:
+        print("  No minor issues found.")
+    else:
+        # Print each type of minor issue
+        for issue_type, issues in sorted(minor_issues_by_type.items()):
+            print(f"\n{YELLOW}▶ {issue_type}{RESET} ({len(issues)} issues)")
+            print("-" * 40)
+            
+            # Sort issues by file name
+            for file_path, severity, message, extra_info in sorted(issues, key=lambda x: os.path.basename(x[0])):
+                minor_count += 1
+                print(f"  📄 {file_path}:")
+                print(f"    ⚠️ {message}{extra_info}")
+                print()
+
+# FYI ISSUES SECTION
+if not args.major_only and not args.minor_only:
+    print(f"\n{BLUE}🔵 FYI{RESET}\n" + "="*50)
+    
+    # Group FYI issues by type
+    fyi_issues_by_type = collect_issues_by_type(issues_by_file, 'FYI')
+    
+    if not fyi_issues_by_type:
+        print("  No informational issues found.")
+    else:
+        # Print each type of FYI issue
+        for issue_type, issues in sorted(fyi_issues_by_type.items()):
+            print(f"\n{BLUE}▶ {issue_type}{RESET} ({len(issues)} issues)")
+            print("-" * 40)
+            
+            # Sort issues by file name
+            for file_path, severity, message, extra_info in sorted(issues, key=lambda x: os.path.basename(x[0])):
+                fyi_count += 1
+                print(f"  📄 {file_path}:")
+                print(f"    ℹ️ {message}{extra_info}")
+                print()
+
+# Print summary
+print(f"\n{BOLD}===== SUMMARY ====={RESET}")
+print(f"{RED}🔴 Major issues: {major_count}{RESET}")
+print(f"{YELLOW}🟡 Minor issues: {minor_count}{RESET}")
+print(f"{BLUE}🔵 FYI: {fyi_count}{RESET}")
+print(f"Total files with issues: {len(issues_by_file)}")
+
+# Exit with same code as original command
+exit(result.returncode)
