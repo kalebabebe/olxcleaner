@@ -1,7 +1,7 @@
 # OLX Cleaner
 
-[![Build Status](https://github.com/openedx/olxcleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/openedx/olxcleaner/actions/workflows/ci.yaml)
-[![Coverage Status](https://codecov.io/gh/jolyonb/olxcleaner/branch/master/graphs/badge.svg)](https://codecov.io/gh/jolyonb/olxcleaner)
+[![Build Status](https://github.com/openedx/olxcleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/openedx/olxcleaner/actions/workflows/ci.yml)
+[![Coverage Status](https://codecov.io/gh/openedx/olxcleaner/branch/master/graphs/badge.svg)](https://codecov.io/gh/openedx/olxcleaner)
 
 This library aims to perform two functions:
 
@@ -20,10 +20,10 @@ Copyright (C) 2020-2024 Axim, Inc. and Contributors
 
 ## Links
 
-* [Error Listing](errors.md)
-* [Wishlist](wishlist.md)
-* [Vision](vision.md)
-* [Changelog](changelog.md)
+* [Error Listing](docs/errors.md)
+* [Wishlist](docs/wishlist.md)
+* [Vision](docs/vision.md)
+* [Changelog](CHANGELOG.md)
 * [License](LICENSE)
 
 ## Installation
@@ -53,22 +53,7 @@ The `pretty-edx-cleaner` script provides an improved, color-coded output format 
 
 ### Installation
 
-The script is now included in the `olxcleaner` package and can be installed in two ways:
-
-1. Using PyPi:
-```bash
-pip install olxcleaner
-```
-
-2. Using the repository:
-```bash
-git clone https://github.com/openedx/olxcleaner
-cd olxcleaner
-virtualenv -p python3
-make requirements
-```
-
-The script will be available as `pretty-edx-cleaner` after installation.
+The script is included in the `olxcleaner` package and will be available after installation.
 
 ### Usage
 
@@ -78,55 +63,13 @@ cd /path/to/your/course
 pretty-edx-cleaner
 ```
 
-### Command Line Options
-
+Command line options:
 * `--major-only`: Show only major issues
 * `--minor-only`: Show only minor issues
 * `--fyi-only`: Show only FYI issues
 * `--no-color`: Disable colored output
 
-### Issue Categories
-
-The script categorizes issues into three severity levels:
-
-#### 🔴 Major Issues
-* `GradingPolicyIssue`: Problems with the grading policy that could affect student grades
-* `InvalidSetting`: Missing required course settings
-* `PolicyNotFound`: Missing policy files essential for course operation
-
-#### 🟡 Minor Issues
-* `MissingFile`: Missing static files (images, documents, etc.)
-* `DateOrdering`: Dates that are out of sequence
-* `MissingDisplayName`: Components missing display names
-* `UnexpectedTag`: Tag found in inappropriate location
-* `InvalidHTML`: HTML syntax errors (formatting issues)
-
-#### 🔵 FYI Issues
-All other issues are considered FYI and will be displayed in the blue section.
-
-### Output Format
-
-The output is color-coded and organized into three sections:
-
-* 🔴 MAJOR ISSUES: Critical problems that need immediate attention
-* 🟡 MINOR ISSUES: Less critical problems that should be addressed
-* 🔵 FYI: Informational issues that don't affect functionality
-
-Each section groups issues by type and provides full file paths for easy navigation in IDEs.
-
-### Exit Codes
-
-The script uses the same exit codes as `edx-cleaner`:
-* 0: No issues found or all issues are below the failure threshold
-* 1: Issues found at or above the failure threshold
-
-### Source Code
-
-The script is now part of the `olxcleaner` package and can be found in the `olxcleaner/entries` directory. It's organized into several classes:
-
-* `Issue`: Represents a single validation issue
-* `IssueCollector`: Handles collecting and categorizing issues
-* `OutputFormatter`: Manages the formatting of the output with colors and emojis
+For detailed documentation, including issue categories, output format, and best practices, see [pretty-edx-cleaner documentation](docs/pretty-edx-cleaner.md).
 
 ## edx-cleaner Usage
 
@@ -164,7 +107,7 @@ edx-cleaner [-h]
 * `-s`: Suppress summary of errors. Implied by `-q`.
 * `-S`: Display course statistics (off by default). Overridden by `-q`.
 * `-f`: Select the error level at which to exit with an error code. 0 = DEBUG, 1 = INFO, 2 = WARNING, 3 = ERROR (default), 4 = NEVER. The exit code is set to `1` if an error at the specified level or higher is present.
-* `-i`: Specify a space-separated list of error names to ignore. See [Error Listing](errors.md).
+* `-i`: Specify a space-separated list of error names to ignore. See [Error Listing](docs/errors.md).
 
 ## edx-reporter Usage
 
