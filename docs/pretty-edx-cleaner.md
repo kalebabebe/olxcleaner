@@ -20,31 +20,33 @@ The `pretty-edx-cleaner` script is a wrapper for the standard `edx-cleaner` tool
 
 ## Installation
 
-### Method 1: Direct Download
+The script is now included in the `olxcleaner` package and can be installed in two ways:
 
-1. Download the script:
-```bash
-curl -o ~/bin/pretty-edx-cleaner https://raw.githubusercontent.com/openedx/olxcleaner/master/pretty-edx-cleaner
-```
-
-2. Make it executable:
-```bash
-chmod +x ~/bin/pretty-edx-cleaner
-```
-
-3. Add to PATH (if not already done):
-```bash
-echo 'export PATH="$HOME/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
-```
-
-### Method 2: Clone Repository
+### Method 1: Using PyPi
 
 ```bash
-git clone https://github.com/openedx/olxcleaner.git
-ln -s $(pwd)/olxcleaner/pretty-edx-cleaner ~/bin/pretty-edx-cleaner
-chmod +x ~/bin/pretty-edx-cleaner
+pip install olxcleaner
 ```
+
+### Method 2: Using Repository
+
+```bash
+git clone https://github.com/openedx/olxcleaner
+cd olxcleaner
+virtualenv -p python3
+make requirements
+```
+
+The script will be available as `pretty-edx-cleaner` after installation.
+
+## Source Code Organization
+
+The script is organized in the `olxcleaner/entries` directory with the following structure:
+
+* `pretty_edx_cleaner.py`: Main script file containing:
+  * `Issue`: Class representing a single validation issue
+  * `IssueCollector`: Class handling issue collection and categorization
+  * `OutputFormatter`: Class managing output formatting with colors and emojis
 
 ## Usage
 
