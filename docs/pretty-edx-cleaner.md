@@ -137,11 +137,6 @@ The output is organized hierarchically:
 🔴 MAJOR ISSUES
 ==================================================
 
-▶ InvalidHTML (3 issues)
-----------------------------------------
-  📄 /Users/username/course/html/09cbb7a769c14b2eafdc115c5235b767.html:
-    ❌ Unexpected end tag : p, line 11, column 5
-
 ▶ InvalidSetting (2 issues)
 ----------------------------------------
   📄 /Users/username/course/course/2023_Summer.xml:
