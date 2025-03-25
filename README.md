@@ -12,6 +12,7 @@ Based on this, two scripts are provided that leverage the library:
 
 * `edx-cleaner` constructs an error report, course tree and course statistics
 * `edx-reporter` constructs a LaTeX file representation of the course structure
+* `pretty-edx-cleaner` provides an improved, color-coded output format for validation results
 
 Copyright (C) 2018-2019 Jolyon Bloomfield
 
@@ -45,6 +46,72 @@ make requirements
 ```
 
 You can run `pytest` to ensure that all tests are passing as expected.
+
+## pretty-edx-cleaner
+
+The `pretty-edx-cleaner` script provides an improved, color-coded output format for the validation results. It requires Python 3.9 or later and depends on the `edx-cleaner` tool being installed.
+
+### Installation
+
+1. Download the script:
+```bash
+curl -o ~/bin/pretty-edx-cleaner https://raw.githubusercontent.com/openedx/olxcleaner/master/pretty-edx-cleaner
+```
+
+2. Make it executable:
+```bash
+chmod +x ~/bin/pretty-edx-cleaner
+```
+
+### Usage
+
+Basic usage:
+```bash
+cd /path/to/your/course
+pretty-edx-cleaner
+```
+
+### Command Line Options
+
+* `--major-only`: Show only major issues
+* `--minor-only`: Show only minor issues
+* `--fyi-only`: Show only FYI issues
+* `--no-color`: Disable colored output
+
+### Issue Categories
+
+The script categorizes issues into three severity levels:
+
+#### 🔴 Major Issues
+* `GradingPolicyIssue`: Problems with the grading policy that could affect student grades
+* `InvalidSetting`: Missing required course settings
+* `PolicyNotFound`: Missing policy files essential for course operation
+
+#### 🟡 Minor Issues
+* `MissingFile`: Missing static files (images, documents, etc.)
+* `DateOrdering`: Dates that are out of sequence
+* `MissingDisplayName`: Components missing display names
+* `UnexpectedTag`: Tag found in inappropriate location
+* `InvalidHTML`: HTML syntax errors (formatting issues)
+
+#### 🔵 FYI Issues
+All other issues are considered FYI and will be displayed in the blue section.
+
+### Output Format
+
+The output is color-coded and organized into three sections:
+
+* 🔴 MAJOR ISSUES: Critical problems that need immediate attention
+* 🟡 MINOR ISSUES: Less critical problems that should be addressed
+* 🔵 FYI: Informational issues that don't affect functionality
+
+Each section groups issues by type and provides full file paths for easy navigation in IDEs.
+
+### Exit Codes
+
+The script uses the same exit codes as `edx-cleaner`:
+* 0: No issues found or all issues are below the failure threshold
+* 1: Issues found at or above the failure threshold
 
 ## edx-cleaner Usage
 
@@ -116,19 +183,4 @@ The workhorse of the library is `olxcleaner.validate`, which validates a course 
 olxcleaner.validate(filename, steps=8, ignore=None, allowed_xblocks=None)
 ```
 
-* `filename`: Pass in either the course directory or the path of `course.xml` for the course you wish to validate.
-* `steps`: Choose how many validation steps you wish to perform:
-  * 1: Load the course
-  * 2: Load the policy and grading policy
-  * 3: Validate `url_name`s
-  * 4: Merge policy data with course, ensuring that all references are valid
-  * 5: Validate the grading policy
-  * 6: Have every object validate itself
-  * 7: Parse the course for global errors
-  * 8: Parse the course for global errors that may be time-consuming to detect
-* `ignore`: A list of error names to ignore
-* `allowed_xblocks`: A list of all allowed xblocks that course olx may contain.
-
-Returns `EdxCourse`, `ErrorStore`, `url_names` (dictionary `{'url_name': EdxObject}`, or `None` if `steps < 3`)
-
-See examples of how to use `olxcleaner.validate` and the objects it returns in `olxcleaner.entries`.
+* `filename`: Pass in either the course directory or the path of `course.xml`
