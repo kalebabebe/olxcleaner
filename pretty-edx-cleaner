@@ -18,7 +18,7 @@ MINOR_ISSUES = [
     'MissingFile',         # Missing static files 
     'DateOrdering',        # Date ordering issues
     'MissingDisplayName',  # Missing display names (visual issue)
-    'UnexpectedTag'        # 
+    'UnexpectedTag'        # Tag found in inappropriate location
 ]
 
 # All other issues are considered FYI

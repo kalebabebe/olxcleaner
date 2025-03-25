@@ -97,7 +97,7 @@ class PointerAlreadyPointedAt(CourseError):
 
 class UnexpectedTag(CourseError):
     """A tag was found in an inappropriate location (e.g., a `vertical` in a `chapter`), or the tag was not recognized."""
-    _level = ErrorLevel.ERROR
+    _level = ErrorLevel.WARNING
 
     def __init__(self, filename, **kwargs):
         super().__init__(filename)
