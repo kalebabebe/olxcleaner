@@ -40,7 +40,8 @@ setuptools.setup(
     entry_points={
         'console_scripts': [
             'edx-cleaner=olxcleaner.entries.edxcleaner:main',
-            'edx-reporter=olxcleaner.entries.edxreporter:main'
+            'edx-reporter=olxcleaner.entries.edxreporter:main',
+            'pretty-edx-cleaner=olxcleaner.entries.pretty_edx_cleaner:main'
         ],
     }
 )

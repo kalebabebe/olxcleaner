@@ -53,15 +53,22 @@ The `pretty-edx-cleaner` script provides an improved, color-coded output format 
 
 ### Installation
 
-1. Download the script:
+The script is now included in the `olxcleaner` package and can be installed in two ways:
+
+1. Using PyPi:
 ```bash
-curl -o ~/bin/pretty-edx-cleaner https://raw.githubusercontent.com/openedx/olxcleaner/master/pretty-edx-cleaner
+pip install olxcleaner
 ```
 
-2. Make it executable:
+2. Using the repository:
 ```bash
-chmod +x ~/bin/pretty-edx-cleaner
+git clone https://github.com/openedx/olxcleaner
+cd olxcleaner
+virtualenv -p python3
+make requirements
 ```
+
+The script will be available as `pretty-edx-cleaner` after installation.
 
 ### Usage
 
@@ -112,6 +119,14 @@ Each section groups issues by type and provides full file paths for easy navigat
 The script uses the same exit codes as `edx-cleaner`:
 * 0: No issues found or all issues are below the failure threshold
 * 1: Issues found at or above the failure threshold
+
+### Source Code
+
+The script is now part of the `olxcleaner` package and can be found in the `olxcleaner/entries` directory. It's organized into several classes:
+
+* `Issue`: Represents a single validation issue
+* `IssueCollector`: Handles collecting and categorizing issues
+* `OutputFormatter`: Manages the formatting of the output with colors and emojis
 
 ## edx-cleaner Usage
 
