@@ -104,10 +104,16 @@ for line in output.split('\n'):
         issues_by_file[full_path].append((severity, issue_type, message, extra_info))
 
 # Function to determine issue level
-def get_issue_level(issue_type, message):
+def get_issue_level(issue_type, message, severity):
+    # First check our explicit categorization lists
     if issue_type in MAJOR_ISSUES:
         return 'MAJOR'
     elif issue_type in MINOR_ISSUES:
+        return 'MINOR'
+    # If not in our lists, use the severity from olxcleaner
+    elif severity == 'ERROR':
+        return 'MAJOR'
+    elif severity == 'WARNING':
         return 'MINOR'
     else:
         return 'FYI'
@@ -125,7 +131,7 @@ def collect_issues_by_type(issues, level):
     result = defaultdict(list)
     for file_path, file_issues in issues.items():
         for severity, issue_type, message, extra_info in file_issues:
-            if get_issue_level(issue_type, message) == level:
+            if get_issue_level(issue_type, message, severity) == level:
                 result[issue_type].append((file_path, severity, message, extra_info))
     return result
 
