@@ -10,7 +10,6 @@ from collections import defaultdict
 MAJOR_ISSUES = [
     'GradingPolicyIssue',  # Affects grading
     'InvalidSetting',      # Missing required course settings
-    'InvalidHTML',         # HTML errors that might affect content display
     'PolicyNotFound'       # Missing policy file - critical issue
 ]
 
@@ -18,7 +17,8 @@ MINOR_ISSUES = [
     'MissingFile',         # Missing static files 
     'DateOrdering',        # Date ordering issues
     'MissingDisplayName',  # Missing display names (visual issue)
-    'UnexpectedTag'        # Tag found in inappropriate location
+    'UnexpectedTag',       # Tag found in inappropriate location
+    'InvalidHTML'          # HTML syntax errors (formatting issues)
 ]
 
 # All other issues are considered FYI
