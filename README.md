@@ -1,7 +1,7 @@
 # OLX Cleaner
 
-[![Build Status](https://github.com/openedx/olxcleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/openedx/olxcleaner/actions/workflows/ci.yml)
-[![Coverage Status](https://codecov.io/gh/openedx/olxcleaner/branch/master/graphs/badge.svg)](https://codecov.io/gh/openedx/olxcleaner)
+[![Build Status](https://github.com/kalebabebe/olxcleaner/actions/workflows/ci.yml/badge.svg)](https://github.com/kalebabebe/olxcleaner/actions/workflows/ci.yml)
+[![Coverage Status](https://codecov.io/gh/kalebabebe/olxcleaner/branch/master/graphs/badge.svg)](https://codecov.io/gh/kalebabebe/olxcleaner)
 
 This library aims to perform two functions:
 
@@ -30,19 +30,44 @@ Copyright (C) 2020-2024 Axim, Inc. and Contributors
 
 ### Using PyPi
 
-This package requires python 3.11 or later.
+This package requires python 3.9 or later.
 
 ```bash
-pip install olxcleaner
+pip3 install olxcleaner
+```
+
+Or install directly from the fork:
+```bash
+pip3 install git+https://github.com/kalebabebe/olxcleaner.git
+```
+
+After installation, ensure the scripts are in your PATH:
+```bash
+# Check if the scripts are installed
+which edx-cleaner
+which pretty-edx-cleaner
+
+# If not found, you may need to add the Python scripts directory to your PATH
+# For example, on Unix-like systems:
+export PATH="$HOME/.local/bin:$PATH"  # For user installs
+# or
+export PATH="/usr/local/bin:$PATH"    # For system installs
 ```
 
 ### Using Repository
 
 ```bash
-git clone https://github.com/openedx/olxcleaner
+git clone https://github.com/kalebabebe/olxcleaner
 cd olxcleaner
 virtualenv -p python3
 make requirements
+
+# Install the package in development mode
+pip3 install -e .
+
+# Verify the scripts are installed
+which edx-cleaner
+which pretty-edx-cleaner
 ```
 
 You can run `pytest` to ensure that all tests are passing as expected.
