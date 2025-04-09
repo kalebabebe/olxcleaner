@@ -32,11 +32,7 @@ Copyright (C) 2020-2024 Axim, Inc. and Contributors
 
 This package requires python 3.9 or later.
 
-```bash
-pip3 install olxcleaner
-```
-
-Or install directly from the fork:
+Install directly from the fork:
 ```bash
 pip3 install git+https://github.com/kalebabebe/olxcleaner.git
 ```
