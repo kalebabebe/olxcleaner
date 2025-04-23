@@ -34,20 +34,13 @@ This package requires python 3.9 or later.
 
 Install directly from the fork:
 ```bash
-pip3 install git+https://github.com/kalebabebe/olxcleaner.git
+pip3 install --user git+https://github.com/kalebabebe/olxcleaner.git
 ```
 
-After installation, ensure the scripts are in your PATH:
+After installation, verify the scripts are available:
 ```bash
-# Check if the scripts are installed
 which edx-cleaner
 which pretty-edx-cleaner
-
-# If not found, you may need to add the Python scripts directory to your PATH
-# For example, on Unix-like systems:
-export PATH="$HOME/.local/bin:$PATH"  # For user installs
-# or
-export PATH="/usr/local/bin:$PATH"    # For system installs
 ```
 
 ### Using Repository

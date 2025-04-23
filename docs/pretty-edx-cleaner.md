@@ -8,10 +8,9 @@ The `pretty-edx-cleaner` script is a wrapper for the standard `edx-cleaner` tool
 
 * Python 3.9 or later
 * Terminal with color support (optional)
-* Install via pip: `pip3 install olxcleaner`
-* Or install directly from the fork: `pip3 install git+https://github.com/kalebabebe/olxcleaner.git`
+* Install directly from the fork: `pip3 install --user git+https://github.com/kalebabebe/olxcleaner.git`
 
-After installation, verify the script is in your PATH:
+After installation, verify the script is available:
 ```bash
 which pretty-edx-cleaner
 ```
